@@ -5,6 +5,7 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+AUTH_USER_MODEL = 'users.User'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
@@ -27,6 +28,8 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.sellers',
     'apps.clients',
+    'apps.products',
+    'apps.sales',
 ]
 
 MIDDLEWARE = [
