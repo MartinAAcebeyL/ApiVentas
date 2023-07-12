@@ -18,8 +18,20 @@ class Category(models.Model):
         db_table = 'categories'
         verbose_name = 'category'
         verbose_name_plural = 'categories'
-        
+
     name = models.CharField(max_length=255)
     description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Stock(models.Model):
+    class Meta:
+        db_table = 'stocks'
+        verbose_name = 'stock'
+        verbose_name_plural = 'stocks'
+
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

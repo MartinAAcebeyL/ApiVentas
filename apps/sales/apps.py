@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SelsConfig(AppConfig):
+class SalesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'sels'
+    name = 'apps.sales'
