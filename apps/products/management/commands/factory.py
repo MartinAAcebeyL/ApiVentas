@@ -37,7 +37,7 @@ def create_product(amount: int = 10):
         create_single_product().save()
 
 
-def create_category(amount: int = 10):
+def create_category(amount: int = 5):
     """Create fake categories"""
     CATEGORIES = [
         "Celulares",
