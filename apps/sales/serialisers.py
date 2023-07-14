@@ -3,26 +3,25 @@ from .models import Sale, SaleDetail
 from apps.products.models import Product
 
 
-class SaleDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SaleDetail
-        fields = ['quantity', 'total', 'payment_method']
-        read_only_fields = ['unit_price', 'sale']
-
-    def create(self, validated_data):
-        validated_data['sale'] = self.context['sale']
-        validated_data['unit_price'] = validated_data['total'] / \
-            validated_data['quantity']
-
-        sale_detail = SaleDetail.objects.create(**validated_data)
-        return sale_detail
-
-
 class SaleSerializer(serializers.ModelSerializer):
-    sale_detail = SaleDetailSerializer()
-    product = serializers.PrimaryKeyRelatedField(
-        queryset=Product.objects.all())
-
     class Meta:
         model = Sale
-        fields = '__all__'
+        fields = ['seller', 'product']
+
+
+class SaleDetailSerializer(serializers.ModelSerializer):
+    sale = SaleSerializer()
+
+    class Meta:
+        model = SaleDetail
+        fields = ['sale', 'quantity', 'total', 'unit_price',
+                  'payment_method']
+
+    def create(self, validated_data):
+        sale_data = validated_data.pop('sale')
+        sale = Sale.objects.create(
+            seller=sale_data['seller'],
+        )
+        sale.product.set(sale_data['product'])
+        sale_detail = SaleDetail.objects.create(sale=sale, **validated_data)
+        return sale_detail
