@@ -1,10 +1,7 @@
 from django.core.management.base import BaseCommand
 from .factory import create_category, create_product, create_stock
 
-
 class Command(BaseCommand):
-    help = 'Genera datos falsos para los modeloes categorias, productos y stock'
-
     def add_arguments(self, parser):
         parser.add_argument('--cant', nargs='?', default=10)
         parser.add_argument('--c', nargs='?', default=0)

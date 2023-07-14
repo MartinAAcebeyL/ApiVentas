@@ -1,4 +1,4 @@
-from apps.products.models import Category, Product, Stock
+from apps.products.models import Category, Product, Stock, HistoryPrice
 from faker import Faker
 import random
 
@@ -6,16 +6,28 @@ import random
 fake = Faker()
 
 
+def create_history_price(price, product):
+    """Create fake history prices"""
+    return HistoryPrice.objects.create(
+        product=product,
+        price=price
+    )
+
+
 def create_product(amount: int = 10):
     """Create fake products"""
     def create_single_product():
-        return Product.objects.create(
+        price = fake.pydecimal(2, 2, True)
+        product = Product.objects.create(
             category=random.choice(Category.objects.all()),
             name=fake.name(),
             description=fake.text(),
             weight=random.randint(1, 10),
-            price=fake.pydecimal(2, 2, True)
+            price=price
         )
+        product.save()
+        create_history_price(price, product).save()
+        return product
 
     if amount == 1:
         product = create_single_product().save()

@@ -7,20 +7,8 @@ class Sale(models.Model):
         verbose_name = 'sale'
         verbose_name_plural = 'sales'
 
-    PAYMENT_METHODS = (
-        ('cash', 'Cash'),
-        ('qr', 'Qr'),
-        ('transfer', 'Transfer')
-    )
-
     seller = models.ForeignKey('sellers.Seller', on_delete=models.CASCADE)
     product = models.ForeignKey('products.Product', on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.IntegerField()
-    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
 class SaleDetail(models.Model):
@@ -29,10 +17,19 @@ class SaleDetail(models.Model):
         verbose_name = 'sale_detail'
         verbose_name_plural = 'sales_details'
 
+    PAYMENT_METHODS = (
+        ('cash', 'Cash'),
+        ('qr', 'Qr'),
+        ('transfer', 'Transfer')
+    )
+
     sale = models.ForeignKey('Sale', on_delete=models.CASCADE)
     quantity = models.IntegerField()
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Shipment(models.Model):
@@ -40,7 +37,7 @@ class Shipment(models.Model):
         db_table = 'shipments'
         verbose_name = 'shipment'
         verbose_name_plural = 'shipments'
-        
+
     DEPARTAMENT_CHOICES = (
         ('lp', 'La Paz'),
         ('cb', 'Cochabamba'),

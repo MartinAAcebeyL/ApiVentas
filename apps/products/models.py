@@ -13,6 +13,17 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
 
+class HistoryPrice(models.Model):
+    class Meta:
+        db_table = 'history_prices'
+        verbose_name = 'history_price'
+        verbose_name_plural = 'history_prices'
+
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class Category(models.Model):
     class Meta:
         db_table = 'categories'
