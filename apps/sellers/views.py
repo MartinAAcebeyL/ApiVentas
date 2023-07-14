@@ -1,3 +1,5 @@
-from django.shortcuts import render
+from rest_framework.viewsets import generics
+from .serializers import SellerSerializer
 
-# Create your views here.
+class CreateSellerView(generics.CreateAPIView):
+    serializer_class = SellerSerializer
