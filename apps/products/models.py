@@ -42,7 +42,7 @@ class Stock(models.Model):
         verbose_name = 'stock'
         verbose_name_plural = 'stocks'
 
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    product = models.ManyToManyField('Product')
     quantity = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

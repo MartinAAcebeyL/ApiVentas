@@ -8,7 +8,7 @@ class Sale(models.Model):
         verbose_name_plural = 'sales'
 
     seller = models.ForeignKey('sellers.Seller', on_delete=models.CASCADE)
-    product = models.ForeignKey('products.Product', on_delete=models.CASCADE)
+    product = models.ManyToManyField('products.Product')
 
 
 class SaleDetail(models.Model):
@@ -23,10 +23,10 @@ class SaleDetail(models.Model):
         ('transfer', 'Transfer')
     )
 
-    sale = models.ForeignKey('Sale', on_delete=models.CASCADE)
+    sale = models.OneToOneField('Sale', on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -56,7 +56,7 @@ class Shipment(models.Model):
         ('delivered', 'Delivered')
     )
 
-    sale = models.ForeignKey('Sale', on_delete=models.CASCADE)
+    sale = models.OneToOneField('Sale', on_delete=models.CASCADE)
     departament = models.CharField(max_length=2, choices=DEPARTAMENT_CHOICES)
     city = models.CharField(max_length=255, default='Sucre')
     shipment_cost = models.DecimalField(max_digits=10, decimal_places=2)
