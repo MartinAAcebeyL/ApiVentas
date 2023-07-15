@@ -1,16 +1,14 @@
 from pathlib import Path
-from decouple import Config
-import os
+from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-CONFIG = Config(os.path.join(BASE_DIR, '.env'))
 
-
+AUTH_USER_MODEL = 'users.User'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = CONFIG('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -27,9 +25,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'apps.users',
     'apps.sellers',
     'apps.clients',
+    'apps.products',
+    'apps.sales',
 ]
 
 MIDDLEWARE = [
@@ -68,8 +69,12 @@ WSGI_APPLICATION = 'registroVentas.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT'),
     }
 }
 
