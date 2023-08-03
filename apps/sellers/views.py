@@ -10,7 +10,7 @@ class CreateSellerView(generics.CreateAPIView):
 
 
 class ShowSalesView(generics.ListAPIView):
-    permission_classes = (permissions.IsAdminUser,)
+    # permission_classes = (permissions.IsAdminUser,)
     serializer_class = ShowSalesSerializer
 
     def get_queryset(self):
@@ -22,7 +22,7 @@ class ShowSalesView(generics.ListAPIView):
         saler = self.request.GET.get('saler', None)
 
         queryset = SaleDetail.objects.all().order_by(
-            'sale.product.category') if sort == 'ASC' else SaleDetail.objects.all().order_by('-sale.product.category')
+            'sale__product__category') if sort == 'ASC' else SaleDetail.objects.all().order_by('-sale__product__category')
 
         if categories:
             queryset = queryset.filter(sale__product__category__in=categories)
