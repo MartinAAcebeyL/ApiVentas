@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'apps.clients',
     'apps.products',
     'apps.sales',
+    'xhtml2pdf'
 ]
 
 MIDDLEWARE = [
