@@ -25,18 +25,23 @@ class MakePDFReportSaleView(APIView):
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request):
+        # get the query params from the request
         start_date = request.query_params.get('start_date')
         end_date = request.query_params.get('end_date')
 
+        # we check the dates
         try:
             start_date = datetime.strptime(start_date, '%Y-%m-%d')
             end_date = datetime.strptime(end_date, '%Y-%m-%d')
             if start_date > end_date:
                 return Response({'message': 'Start date must be before end date'}, status=status.HTTP_400_BAD_REQUEST)
+            if end_date > datetime.now():
+                return Response({'message': 'End date must be before current date'}, status=status.HTTP_400_BAD_REQUEST)
         except ValueError:
             return Response({'message': 'Invalid datses'}, status=status.HTTP_400_BAD_REQUEST)
+        
 
-        template_path = 'user_printer.html'
+        template_path = 'sales_report.html'
         context = {'myvar': 'this is your template context'}
         # Create a Django response object, and specify content_type as pdf
         response = Response(content_type='application/pdf')
