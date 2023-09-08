@@ -1,0 +1,109 @@
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    font-size: 30px;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.content {
+    max-width: 85%;
+    margin: 0 auto;
+    padding: 1rem;
+    background-color: #ffffff;
+}
+
+h1 {
+    color: #333;
+}
+
+h2 {
+    color: #444;
+}
+
+/* Estilos de la cabecera */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 10px solid #333;
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+}
+
+/* .title { */
+    /* text-align: center; */
+/* } */
+
+/* Estilos de las tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 5px solid black;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f5f5f5;
+    color: #333;
+    font-weight: bold;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tfoot {
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
+/* Estilos del pie de página */
+.footer {
+    margin-top: 20px;
+    text-align: center;
+    border-top: 2px solid #333;
+    padding-top: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Estilos de la sección de categorías */
+.section {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.section h2 {
+    margin-top: 0;
+    color: #444;
+    font-size: 18px;
+}
+
+.section table {
+    margin-top: 10px;
+}
+
+/* Estilo para los productos destacados */
+tr.destacado {
+    background-color: #ffecb3 !important;
+    font-weight: bold;
+    color: #333;
+}
