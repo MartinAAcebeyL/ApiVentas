@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>{{ title }}</title>
-</head>
-<body>
-    <h1>{{ title }}</h1>
-    <p>{{ content }}</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Informe de Ventas</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../static/css/sales_report.css"
+    />
+  </head>
+  <body>
+    <div class="content">
+      <div class="header">
+        <section class="logo">
+          <img src="" alt="Logo de Dinexus" />
+        </section>
+        <section class="title">
+          <h1>DiNexus</h1>
+          <h2>Informe de Ventas</h2>
+          <p>Entre fechas: {{ start_date }} y {{ end_date }}</p>
+          <p>Fecha: {{ date }}</p>
+          <p>Ventas en Bs: {{ sales }}</p>
+        </section>
+        <section></section>
+      </div>
+
+      <div class="body">
+        {% for category in categories %}
+        <h2>Categoria: {{ category.name }}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th colspan="5">Producto</th>
+            </tr>
+            <tr>
+              <th>Fecha</th>
+              <th>Precio(Bs)</th>
+              <th>Costo de envio</th>
+              <th>Destino</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in category %}
+            <tr>
+              <td>{{ product.date }}</td>
+              <td>{{ product.price }}</td>
+              <td>{{ product.cost }}</td>
+              <td>{{ product.destination }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Stock</td>
+            </tr>
+            <tr>
+              <td>Unidades vendidas: {{unidades}}</td>
+              <td>Unidades faltantes: {{unidades}}</td>
+              <td>Total de unidades: {{unidades}}</td>
+            </tr>
+          </tfoot>
+        </table>
+        {% endfor %}
+      </div>
+
+      <div class="footer">
+        <p>
+          <b
+            >Este documento no tiene validez sin las firmas de los fundadores</b
+          >
+        </p>
+      </div>
+    </div>
+  </body>
 </html>
