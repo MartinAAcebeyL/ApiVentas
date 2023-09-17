@@ -4,10 +4,6 @@ from django.contrib.staticfiles import finders
 
 
 def link_callback(uri, rel):
-    """
-    Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-    resources
-    """
     result = finders.find(uri)
     if result:
         if not isinstance(result, (list, tuple)):
@@ -15,10 +11,10 @@ def link_callback(uri, rel):
         result = list(os.path.realpath(path) for path in result)
         path = result[0]
     else:
-        sUrl = settings.STATIC_URL        # Typically /static/
-        sRoot = settings.STATIC_ROOT      # Typically /home/userX/project_static/
-        mUrl = settings.MEDIA_URL         # Typically /media/
-        mRoot = settings.MEDIA_ROOT       # Typically /home/userX/project_static/media/
+        sUrl = settings.STATIC_URL
+        sRoot = settings.STATIC_ROOT
+        mUrl = settings.MEDIA_URL
+        mRoot = settings.MEDIA_ROOT
 
         if uri.startswith(mUrl):
             path = os.path.join(mRoot, uri.replace(mUrl, ""))
@@ -27,7 +23,6 @@ def link_callback(uri, rel):
         else:
             return uri
 
-        # make sure that file exists
         if not os.path.isfile(path):
             raise Exception(
                 'media URI must start with %s or %s' % (sUrl, mUrl)
