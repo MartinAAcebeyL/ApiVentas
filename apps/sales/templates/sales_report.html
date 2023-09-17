@@ -13,16 +13,17 @@
     <div class="content">
       <div class="header">
         <section class="logo">
-          <img src="" alt="Logo de Dinexus" />
+          <img src="../static/imgs/logo.png" alt="Logo de Dinexus" />
         </section>
+
         <section class="title">
           <h1>DiNexus</h1>
           <h2>Informe de Ventas</h2>
+          <p>Solicitante: {{nombre_solicitante}}</p>
           <p>Entre fechas: {{ start_date }} y {{ end_date }}</p>
           <p>Fecha: {{ date }}</p>
-          <p>Ventas en Bs: {{ sales }}</p>
+          <p>Total de ventas en Bs: {{ sales }}</p>
         </section>
-        <section></section>
       </div>
 
       <div class="body">
@@ -34,31 +35,36 @@
               <th colspan="5">Producto</th>
             </tr>
             <tr>
+              <th>Nombre</th>
               <th>Fecha</th>
               <th>Precio(Bs)</th>
               <th>Costo de envio</th>
               <th>Destino</th>
-              <th>Fecha</th>
             </tr>
           </thead>
           <tbody>
-            {% for product in category %}
+            {% for product in category.products %}
             <tr>
+              <td>{{product.name}}</td>
               <td>{{ product.date }}</td>
               <td>{{ product.price }}</td>
-              <td>{{ product.cost }}</td>
+              <td>{{ product.shipping_cost }}</td>
               <td>{{ product.destination }}</td>
             </tr>
             {% endfor %}
           </tbody>
           <tfoot>
             <tr>
-              <td>Stock</td>
+              <th colspan="5">Stock</th>
             </tr>
             <tr>
-              <td>Unidades vendidas: {{unidades}}</td>
-              <td>Unidades faltantes: {{unidades}}</td>
-              <td>Total de unidades: {{unidades}}</td>
+              <td>Unidades faltantes: 15</td>
+              <td>Unidades vendidas: 5</td>
+              <td>Total ventas: {{category.total_price}}</td>
+              <td>
+                Total costos de envio: {{category.total_shipping_cost}}
+              </td>
+              <td></td>
             </tr>
           </tfoot>
         </table>
