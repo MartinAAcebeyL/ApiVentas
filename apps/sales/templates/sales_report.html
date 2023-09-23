@@ -14,14 +14,14 @@
       <div class="header">
         <section class="logo">
           <img src="../static/imgs/logo.png" alt="Logo de Dinexus" />
+          <h1>DiNexus</h1>
         </section>
 
         <section class="title">
-          <h1>DiNexus</h1>
           <h2>Informe de Ventas</h2>
+          <p>Fecha: {{date}}</p>
           <p>Solicitante: {{nombre_solicitante}}</p>
           <p>Entre fechas: {{ start_date }} y {{ end_date }}</p>
-          <p>Fecha: {{ date }}</p>
           <p>Total de ventas en Bs: {{ sales }}</p>
         </section>
       </div>
@@ -32,7 +32,7 @@
         <table>
           <thead>
             <tr>
-              <th colspan="5">Producto</th>
+              <th colspan="5">Productos</th>
             </tr>
             <tr>
               <th>Nombre</th>
@@ -53,29 +53,35 @@
             </tr>
             {% endfor %}
           </tbody>
-          <tfoot>
+        </table>
+        <table>
+          <thead>
             <tr>
-              <th colspan="5">Stock</th>
+              <th colspan="4">Stock</th>
             </tr>
             <tr>
-              <td>Unidades faltantes: 15</td>
-              <td>Unidades vendidas: 5</td>
-              <td>Total ventas: {{category.total_price}}</td>
-              <td>
-                Total costos de envio: {{category.total_shipping_cost}}
-              </td>
-              <td></td>
+              <th>Unidades en stock</th>
+              <th>Unidades vendidas</th>
+              <th>Total de ventas</th>
+              <th>Total de costos de envio</th>
             </tr>
-          </tfoot>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>2</td>
+              <td>3</td>
+              <td>4</td>
+            </tr>
+          </tbody>
         </table>
         {% endfor %}
       </div>
-
+      <br /><br /><br /><br /><br /><br /><br /><br />
       <div class="footer">
+        <p>Firma y Nombre(Fundador)</p>
         <p>
-          <b
-            >Este documento no tiene validez sin las firmas de los fundadores</b
-          >
+          <b>Documento valido con las firmas de los fundadores</b>
         </p>
       </div>
     </div>
