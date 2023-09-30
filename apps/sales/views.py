@@ -48,7 +48,6 @@ class MakePDFReportSaleView(APIView):
 
         start_date = "01/08/2023"
         end_date = "31/08/2023"
-        date = "02/09/2023"
         sales = 1500.00
 
         categories = [
@@ -79,9 +78,10 @@ class MakePDFReportSaleView(APIView):
         ]
 
         context = {
+            'nombre_solicitante':nombre_solicitante,
             'start_date': start_date,
             'end_date': end_date,
-            'date': date,
+            'date': fecha,
             'sales': sales,
             'categories': categories,
         }
@@ -92,7 +92,7 @@ class MakePDFReportSaleView(APIView):
         # find the template and render it.
         template = get_template(template_path)
         html = template.render(context)
-
+        
         # create a pdf
         pisa_status = pisa.CreatePDF(
             html, dest=response, link_callback=link_callback)
