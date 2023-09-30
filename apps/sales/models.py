@@ -31,6 +31,16 @@ class SaleDetail(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @classmethod
+    def get_sale_details_between_dates_and_category(cls, category: str,
+                                                    start_date: str, end_date: str):
+
+        sale_detail = SaleDetail.objects.filter(
+            created_at__range=(start_date, end_date), sale__product__category__name=category).values(
+                'id', 'sale__product__name', 'quantity', 'total', 'unit_price', 'created_at')
+
+        return sale_detail
+
 
 class Shipment(models.Model):
     class Meta:

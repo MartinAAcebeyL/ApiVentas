@@ -1,6 +1,7 @@
-import os
-from django.conf import settings
 from django.contrib.staticfiles import finders
+from django.conf import settings
+
+import os
 
 
 def link_callback(uri, rel):

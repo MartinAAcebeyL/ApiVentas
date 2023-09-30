@@ -1,12 +1,18 @@
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions
-from .serialisers import SaleDetailSerializer
-from rest_framework.response import Response
 from rest_framework import status
+
 from django.template.loader import get_template
-from xhtml2pdf import pisa
-from datetime import datetime
 from django.http import HttpResponse
+from django.db.models import Sum, Q
+
+from datetime import datetime, timezone
+from xhtml2pdf import pisa
+
+from .serialisers import SaleDetailSerializer
+from apps.sales.models import SaleDetail
+from apps.products.models import Category
 from .utils import link_callback
 
 
@@ -29,26 +35,44 @@ class MakePDFReportSaleView(APIView):
     def get(self, request):
         # get the query params from the request
         start_date = request.query_params.get('start_date', '2022-01-01')
-        end_date = request.query_params.get('end_date', '2023-01-01')
+        end_date = request.query_params.get('end_date', '2023-09-30')
 
         # we check the dates
         try:
-            start_date = datetime.strptime(start_date, '%Y-%m-%d')
-            end_date = datetime.strptime(end_date, '%Y-%m-%d')
-            if start_date > end_date:
-                return Response({'message': 'Start date must be before end date'}, status=status.HTTP_400_BAD_REQUEST)
-            if end_date > datetime.now():
-                return Response({'message': 'End date must be before current date'}, status=status.HTTP_400_BAD_REQUEST)
-        except ValueError:
-            return Response({'message': 'Invalid datses'}, status=status.HTTP_400_BAD_REQUEST)
+            start_date = datetime.strptime(
+                start_date, '%Y-%m-%d').replace(tzinfo=timezone.utc)
+
+            end_date = datetime.strptime(
+                end_date, '%Y-%m-%d').replace(tzinfo=timezone.utc)
+
+            if start_date > end_date or end_date > datetime.now(timezone.utc):
+                return Response({'message': 'Dates are wrong'},
+                                status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print("error: ", e)
+            return Response({'message': 'Invalid dates'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         template_path = 'sales_report.html'
-        nombre_solicitante = "Juan Pérez"
-        fecha = "10 de septiembre de 2023"
+        applicants_name = "NOMBRE DEL SOLICITANTE"
+        date = datetime.now().strftime('%d-%m-%Y')
 
-        start_date = "01/08/2023"
-        end_date = "31/08/2023"
-        sales = 1500.00
+        sales = 00.00
+        data_group_by_categories = SaleDetail.objects.filter(
+            created_at__range=(start_date, end_date)
+        ).values('sale__product__category__name').annotate(
+            total_quantity=Sum('quantity'),
+            total_sales=Sum('total')
+        ).order_by('sale__product__category__name')
+
+        all_categories_name = Category.objects.values('name')
+        all_sale_detail = SaleDetail.objects.all()
+
+        data_group_by_categories = [category
+                                    for category in all_categories_name]
+        print(data_group_by_categories)
+        print(SaleDetail.get_sale_details_between_dates_and_category(
+            data_group_by_categories[0]['name'], start_date, end_date))
 
         categories = [
             {
@@ -76,27 +100,27 @@ class MakePDFReportSaleView(APIView):
                 ],
             },
         ]
-
         context = {
-            'nombre_solicitante':nombre_solicitante,
-            'start_date': start_date,
-            'end_date': end_date,
-            'date': fecha,
+            'nombre_solicitante': applicants_name,
+            'start_date': start_date.strftime("%Y-%m-%d"),
+            'end_date': end_date.strftime("%Y-%m-%d"),
+            'date': date,
             'sales': sales,
             'categories': categories,
         }
 
         # Create a Django response object, and specify content_type as pdf
+        report_name = f"InformeVentas_{datetime.now().strftime('%m-%d-%Y')}"
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="{report_name}.pdf"'
         # find the template and render it.
         template = get_template(template_path)
         html = template.render(context)
-        
+
         # create a pdf
         pisa_status = pisa.CreatePDF(
             html, dest=response, link_callback=link_callback)
         # if error then show some funny view
         if pisa_status.err:
             return Response('We had some errors <pre>' + html + '</pre>')
-        return response
+        return Response({"hola": "hi"})
