@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 
 
 class Product(models.Model):
@@ -21,7 +22,7 @@ class HistoryPrice(models.Model):
 
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
 
 
 class Category(models.Model):
@@ -32,8 +33,8 @@ class Category(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
 
 
 class Stock(models.Model):
@@ -42,7 +43,26 @@ class Stock(models.Model):
         verbose_name = 'stock'
         verbose_name_plural = 'stocks'
 
-    product = models.ManyToManyField('Product')
+    product = models.ManyToManyField(Product)
     quantity = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    current_quantity = models.IntegerField()
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
+
+    @classmethod
+    def get_current_quantity_by_product_category(cls, category: str) -> int:
+        stock = Stock.objects.filter(product__category__name=category)\
+            .aggregate(Sum('current_quantity'), Sum('quantity'))
+
+        current_quantity = stock['current_quantity__sum'] or 0
+        quantity = stock['quantity__sum'] or 0
+        return current_quantity, quantity
+
+    @classmethod
+    def update_stock(cls, id: int, amount: int) -> bool:
+        stock = cls.objects.get(id=id)
+        if amount > stock.current_quantity:
+            return False
+        stock.current_quantity -= amount
+        stock.save()
+        return True
