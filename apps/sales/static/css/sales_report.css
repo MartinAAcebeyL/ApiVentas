@@ -53,6 +53,10 @@ th {
     padding: 2px 0;
 }
 
+.total_costs{
+    background-color: yellow;
+}
+
 .footer {
     text-align: center;
     font-size: 14px;
