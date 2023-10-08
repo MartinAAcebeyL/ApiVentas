@@ -5,14 +5,13 @@ from rest_framework import status
 
 from django.template.loader import get_template
 from django.http import HttpResponse
-from django.db.models import Sum, Q
 
-from datetime import datetime, timezone
+from datetime import datetime
 from xhtml2pdf import pisa
 
 from .serialisers import SaleDetailSerializer
-from apps.sales.models import SaleDetail
-from apps.products.models import Category
+from apps.sales.models import SaleDetail, Shipment
+from apps.products.models import Category, Stock
 from .utils import link_callback
 
 
@@ -34,18 +33,17 @@ class MakePDFReportSaleView(APIView):
 
     def get(self, request):
         # get the query params from the request
+        now = datetime.today()
         start_date = request.query_params.get('start_date', '2022-01-01')
-        end_date = request.query_params.get('end_date', '2023-09-30')
+        end_date = request.query_params.get(
+            'end_date', now.strftime('%Y-%m-%d'))
 
         # we check the dates
         try:
-            start_date = datetime.strptime(
-                start_date, '%Y-%m-%d').replace(tzinfo=timezone.utc)
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
-            end_date = datetime.strptime(
-                end_date, '%Y-%m-%d').replace(tzinfo=timezone.utc)
-
-            if start_date > end_date or end_date > datetime.now(timezone.utc):
+            if start_date > end_date or end_date > now:
                 return Response({'message': 'Dates are wrong'},
                                 status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
@@ -55,58 +53,52 @@ class MakePDFReportSaleView(APIView):
 
         template_path = 'sales_report.html'
         applicants_name = "NOMBRE DEL SOLICITANTE"
-        date = datetime.now().strftime('%d-%m-%Y')
+        date = now.strftime('%d-%m-%Y')
 
-        sales = 00.00
-        data_group_by_categories = SaleDetail.objects.filter(
-            created_at__range=(start_date, end_date)
-        ).values('sale__product__category__name').annotate(
-            total_quantity=Sum('quantity'),
-            total_sales=Sum('total')
-        ).order_by('sale__product__category__name')
+        sales = SaleDetail.get_total_price_between_dates(
+            start_date, end_date)
 
-        all_categories_name = Category.objects.values('name')
-        all_sale_detail = SaleDetail.objects.all()
-
-        data_group_by_categories = [category
-                                    for category in all_categories_name]
-        print(data_group_by_categories)
-        print(SaleDetail.get_sale_details_between_dates_and_category(
-            data_group_by_categories[0]['name'], start_date, end_date))
-
-        categories = [
-            {
-                'name': 'Electrónica',
-                'total_price': 500.00,
-                'total_shipping_cost': 50.00,
-                'products': [
-                    {'name': 'Teléfono', 'date': '01/08/2023', 'price': 300.00,
-                        'shipping_cost': 30.00, 'destination': 'Casa'},
-                    {'name': 'Tablet', 'date': '02/08/2023', 'price': 200.00,
-                        'shipping_cost': 20.00, 'destination': 'Oficina'},
-                ],
-            },
-            {
-                'name': 'Ropa',
-                'total_price': 600.00,
-                'total_shipping_cost': 60.00,
-                'products': [
-                    {'name': 'Camiseta', 'date': '03/08/2023', 'price': 200.00,
-                        'shipping_cost': 20.00, 'destination': 'Casa'},
-                    {'name': 'Pantalón', 'date': '04/08/2023', 'price': 200.00,
-                        'shipping_cost': 20.00, 'destination': 'Oficina'},
-                    {'name': 'Zapatos', 'date': '05/08/2023', 'price': 200.00,
-                        'shipping_cost': 20.00, 'destination': 'Oficina'},
-                ],
-            },
+        all_categories_group_by_name = [
+            category for category in
+            Category.objects.values('name')
         ]
+
+        for index, category in enumerate(all_categories_group_by_name):
+            category_name = category.get('name')
+
+            # get important data like total sales by category, total shipment cost and products, this to add to principal dictionary
+            list_products = SaleDetail.     get_sale_details_between_dates_and_category(
+                category_name, start_date, end_date)
+            total_sales_by_category = SaleDetail.get_total_price_between_dates_and_category(
+                category_name, start_date, end_date)
+            total_shipment_cost_by_category = Shipment.get_shipment_cost_between_dates_and_category(
+                category_name, start_date, end_date)
+            current_quantity, quantity = Stock.get_current_quantity_by_product_category(
+                category_name)
+
+            # add some data to principal dictionary
+            all_categories_group_by_name[index]['total_sales'] = total_sales_by_category
+            all_categories_group_by_name[index]['total_shipment_cost'] = total_shipment_cost_by_category
+            all_categories_group_by_name[index]['current_quantity'] = current_quantity
+            all_categories_group_by_name[index]['quantity'] = quantity
+
+            for index_1, product in enumerate(list_products):
+                sale = product.get('sale')
+                shipment_destination = Shipment.get_shipment_by_sale(sale)
+                list_products[index_1]['destination'] = shipment_destination[0].get(
+                    'destination')
+                list_products[index_1]['shipping_cost'] = shipment_destination[0].get(
+                    'shipping_cost')
+
+            all_categories_group_by_name[index]['products'] = list_products
+
         context = {
             'nombre_solicitante': applicants_name,
             'start_date': start_date.strftime("%Y-%m-%d"),
             'end_date': end_date.strftime("%Y-%m-%d"),
             'date': date,
             'sales': sales,
-            'categories': categories,
+            'categories': all_categories_group_by_name,
         }
 
         # Create a Django response object, and specify content_type as pdf
@@ -122,5 +114,5 @@ class MakePDFReportSaleView(APIView):
             html, dest=response, link_callback=link_callback)
         # if error then show some funny view
         if pisa_status.err:
-            return Response('We had some errors <pre>' + html + '</pre>')
-        return Response({"hola": "hi"})
+            return Response('Something went wrong', status=pisa_status.err)
+        return response
