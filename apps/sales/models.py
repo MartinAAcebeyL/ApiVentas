@@ -9,7 +9,8 @@ class Sale(models.Model):
         verbose_name_plural = 'sales'
 
     seller = models.ForeignKey('sellers.Seller', on_delete=models.CASCADE)
-    product = models.ManyToManyField('products.Product')
+    product = models.ManyToManyField(
+        'products.Product', related_name='sale_products')
 
 
 class SaleDetail(models.Model):
