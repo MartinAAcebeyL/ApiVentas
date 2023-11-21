@@ -1,0 +1,64 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.content,
+.header {
+    width: 100%;
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo h1 {
+    font-size: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.logo img {
+    width: 150px;
+    border-radius: 50%;
+}
+
+.title {
+    margin-top: 150px;
+    font-size: 18px;
+}
+
+.title > * {
+    margin-bottom: 0;
+    margin-top: 2px;
+}
+
+.body h2 {
+    text-decoration: underline;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+table {
+    font-size: 12px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border: 0.5px solid black;
+}
+
+td,
+th {
+    padding: 2px 0;
+}
+
+.total_costs{
+    background-color: yellow;
+}
+
+.footer {
+    text-align: center;
+    font-size: 14px;
+}
+    

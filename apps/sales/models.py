@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F, Sum
 
 
 class Sale(models.Model):
@@ -28,8 +29,48 @@ class SaleDetail(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
+
+    @classmethod
+    def get_total_price_between_dates(
+            cls, start_date: str, end_date: str) -> float:
+
+        total = SaleDetail.objects.filter(
+            created_at__range=(start_date, end_date))\
+            .aggregate(Sum('total'))
+
+        return total['total__sum'] or 0
+
+    @classmethod
+    def get_total_price_between_dates_and_category(
+            cls, category: str,  start_date: str, end_date: str) -> float:
+
+        total = SaleDetail.objects.filter(
+            created_at__range=(start_date, end_date),
+            sale__product__category__name=category)\
+            .aggregate(Sum('total'))
+
+        return total['total__sum'] or 0
+
+    @classmethod
+    def get_sale_details_between_dates_and_category(
+            cls, category: str, start_date: str, end_date: str) -> list:
+
+        sale_detail = SaleDetail.objects.filter(
+            created_at__range=(start_date, end_date),
+            sale__product__category__name=category
+        ).values(
+            'id',
+            'sale',
+            'quantity',
+            'total',
+            'unit_price',
+            'created_at',
+            name=F('sale__product__name'),
+        )
+
+        return list(sale_detail)
 
 
 class Shipment(models.Model):
@@ -39,15 +80,15 @@ class Shipment(models.Model):
         verbose_name_plural = 'shipments'
 
     DEPARTAMENT_CHOICES = (
-        ('lp', 'La Paz'),
-        ('cb', 'Cochabamba'),
-        ('sc', 'Santa Cruz'),
-        ('or', 'Oruro'),
-        ('pt', 'Potosi'),
-        ('tj', 'Tarija'),
-        ('be', 'Beni'),
-        ('pn', 'Pando'),
-        ('ch', 'Chuquisaca')
+        ('La Paz', 'La Paz'),
+        ('Cochabamba', 'Cochabamba'),
+        ('Santa Cruz', 'Santa Cruz'),
+        ('Oruro', 'Oruro'),
+        ('Potosi', 'Potosi'),
+        ('Tarija', 'Tarija'),
+        ('Beni', 'Beni'),
+        ('Pando', 'Pando'),
+        ('Chuquisaca', 'Chuquisaca')
     )
 
     ESTATUS_CHOICES = (
@@ -57,9 +98,28 @@ class Shipment(models.Model):
     )
 
     sale = models.OneToOneField('Sale', on_delete=models.CASCADE)
-    departament = models.CharField(max_length=2, choices=DEPARTAMENT_CHOICES)
+    departament = models.CharField(max_length=12, choices=DEPARTAMENT_CHOICES)
     city = models.CharField(max_length=255, default='Sucre')
     shipment_cost = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10, choices=ESTATUS_CHOICES)
     description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
+
+    @classmethod
+    def get_shipment_cost_between_dates_and_category(
+            cls, category: str, start_date: str, end_date: str):
+        shipment_cost = Shipment.objects.filter(
+            created_at__range=(start_date, end_date),
+            sale__product__category__name=category)\
+            .aggregate(Sum('shipment_cost'))
+
+        return shipment_cost['shipment_cost__sum'] or 0
+
+    @classmethod
+    def get_shipment_by_sale(cls, id_sale):
+        return Shipment.objects.filter(sale=id_sale)\
+            .values('id',
+                    'sale',
+                    destination=F('departament'),
+                    shipping_cost=F('shipment_cost')
+                    ).all()
