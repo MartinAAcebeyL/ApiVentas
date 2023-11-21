@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Informe de Ventas</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../static/css/sales_report.css"
+    />
+  </head>
+  <body>
+    <div class="content">
+      <div class="header">
+        <section class="logo">
+          <img src="../static/imgs/logo.png" alt="Logo de Dinexus" />
+          <h1>DiNexus</h1>
+        </section>
+
+        <section class="title">
+          <h2>Informe de Ventas</h2>
+          <p>Fecha: {{date}}</p>
+          <p>Solicitante: {{nombre_solicitante}}</p>
+          <p>Entre fechas: {{ start_date }} y {{ end_date }}</p>
+          <p>Total de ventas en Bs: {{ sales }}</p>
+        </section>
+      </div>
+
+      <div class="body">
+        {% for category in categories %}
+        <h2>Categoria: {{ category.name }}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th colspan="7">Productos</th>
+            </tr>
+            <tr>
+              <th>Nombre</th>
+              <th>Fecha</th>
+              <th>Destino</th>
+              <th>Precio unitario(Bs)</th>
+              <th>Cantidad</th>
+              <th>Total(Bs)</th>
+              <th>Costo de envio</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in category.products %}
+            <tr>
+              <td>{{ product.name }}</td>
+              <td>{{ product.created_at }}</td>
+              <td>{{ product.destination }}</td>
+              <td>{{ product.unit_price }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.total }}</td>
+              <td>{{ product.shipping_cost }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td colspan="5"></td>
+              <td class="total_costs">{{category.total_sales}}</td>
+              <td class="total_costs">{{category.total_shipment_cost}}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="7">Stock</th>
+            </tr>
+            <tr>
+              <th></th>
+              <th colspan="3">Unidades en stock</th>
+              <th colspan="3">Unidades compradas</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td colspan="3">{{category.current_quantity}}</td>
+              <td colspan="3">{{ category.quantity }}</td>
+            </tr>
+          </tfoot>
+        </table>
+        <br />
+        {% endfor %}
+      </div>
+      <br /><br /><br /><br /><br /><br /><br /><br />
+      <div class="footer">
+        <p>Firma y Nombre(Fundador)</p>
+        <p>
+          <b>Documento valido con las firmas de los fundadores</b>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
