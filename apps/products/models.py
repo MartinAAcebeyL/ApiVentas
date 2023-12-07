@@ -12,6 +12,7 @@ class Product(models.Model):
     description = models.TextField()
     weight = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    minimum_stock = models.DecimalField(max_digits=3, decimal_places=0)
 
 
 class HistoryPrice(models.Model):
