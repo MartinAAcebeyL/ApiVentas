@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'apps.clients',
     'apps.products',
     'apps.sales',
-    'xhtml2pdf'
+    'xhtml2pdf',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -78,6 +79,12 @@ DATABASES = {
         'HOST': config('DATABASE_HOST'),
         'PORT': config('DATABASE_PORT'),
     }
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
 }
 
 
