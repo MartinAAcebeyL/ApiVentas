@@ -31,7 +31,10 @@ class ShowSalesSerializer(serializers.ModelSerializer):
 
     def get_sale_products(self, obj):
         sale = Sale.objects.get(id=obj.sale.id)
-        product_serializer = ProductSerializer(
-            Product.objects.get(id=sale.product.first().id)
-        )
-        return product_serializer.data
+        try:
+            product_serializer = ProductSerializer(
+                Product.objects.get(id=sale.product.first().id)
+            )
+            return product_serializer.data
+        except:
+            pass
