@@ -11,6 +11,12 @@ class SellerSerializer(serializers.ModelSerializer):
         model = Seller
         fields = "__all__"
 
+    def create(self, validated_data):
+        user = Seller(**validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
+
 
 class ShowSalesSerializer(serializers.ModelSerializer):
     sale_products = serializers.SerializerMethodField()

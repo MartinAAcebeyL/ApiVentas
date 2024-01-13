@@ -52,10 +52,4 @@ class ShowSalesBySellerView(generics.ListAPIView):
     serializer_class = ShowSalesSerializer
 
     def get(self, request, *args, **kwargs):
-        admin = User.objects.get(username="admin").is_active
-        user = User.objects.get(username="user1").is_active
-        print("admin", admin)
-        print("user", user)
-        print(request)
-
         return Response({"message": "we're working on it"})
