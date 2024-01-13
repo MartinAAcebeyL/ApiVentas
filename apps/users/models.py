@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Permission, Group
 import uuid
+from django.contrib.auth.hashers import make_password, check_password
+from .managers import CustomUserManager
 
 
 class User(AbstractUser):
@@ -28,8 +30,3 @@ class User(AbstractUser):
         blank=True,
         related_name="custom_user_set",
     )
-
-    def save(self, *args, **kwargs):
-        if self.password:
-            self.set_password(self.password)
-        super().save(*args, **kwargs)
