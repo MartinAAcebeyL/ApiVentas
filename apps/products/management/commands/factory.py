@@ -8,33 +8,32 @@ fake = Faker()
 
 def create_history_price(price, product):
     """Create fake history prices"""
-    return HistoryPrice.objects.create(
-        product=product,
-        price=price
-    )
+    return HistoryPrice(product=product, price=price).save()
 
 
 def create_product(amount: int = 10):
     """Create fake products"""
+
     def create_single_product():
         price = fake.pydecimal(2, 2, True)
-        product = Product.objects.create(
-            category=random.choice(Category.objects.all()),
+        product = Product(
             name=fake.name(),
             description=fake.text(),
             weight=random.randint(1, 10),
-            price=price
+            price=price,
+            minimum_stock=random.randint(1, 1000),
         )
+        random_category = random.choice(Category.objects.all())
+        product.category = random_category
         product.save()
-        create_history_price(price, product).save()
+        create_history_price(price, product)
         return product
 
     if amount == 1:
-        product = create_single_product().save()
-        return product
+        return create_single_product()
 
     for _ in range(amount):
-        create_single_product().save()
+        create_single_product()
 
 
 def create_category(amount: int = 5):
@@ -48,32 +47,31 @@ def create_category(amount: int = 5):
     ]
 
     def create_single_category():
-        category = CATEGORIES.pop(random.randint(0, len(CATEGORIES)-1))
-        return Category.objects.create(
-            name=category,
-            description=fake.text()
-        )
+        category = CATEGORIES.pop(random.randint(0, len(CATEGORIES) - 1))
+        return Category(name=category, description=fake.text()).save()
 
     if amount == 1:
-        category = create_single_category().save()
-        return category
+        return create_single_category()
 
     for _ in range(amount):
-        create_single_category().save()
+        create_single_category()
 
 
 def create_stock(amount: int = 10):
     """Create fake stock"""
 
     def create_single_stock():
-        return Stock.objects.create(
-            product=random.choice(Product.objects.all()),
-            quantity=random.randint(1, 1000)
+        stock = Stock(
+            quantity=random.randint(1, 1000),
+            current_quantity=random.randint(1, 100),
         )
-
-    if amount == 1:
-        stock = create_single_stock().save()
+        randon_product = random.choice(Product.objects.all())
+        stock.save()
+        stock.product.set([randon_product])
         return stock
 
+    if amount == 1:
+        return create_single_stock()
+
     for _ in range(amount):
-        create_single_stock().save()
+        create_single_stock()
