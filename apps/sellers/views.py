@@ -1,15 +1,16 @@
 from rest_framework.viewsets import generics
+from rest_framework.response import Response
 from rest_framework import permissions
-from .serializers import SellerSerializer, ShowSalesSerializer
-from apps.sales.models import SaleDetail
-from datetime import datetime
 from django.utils import timezone
-from apps.sellers.models import Seller
-from apps.users.models import User
+
+from .serializers import (
+    SellerSerializer,
+    ShowSalesSerializer,
+    ShowSalesBySellerSerializer,
+)
+from apps.sales.models import SaleDetail
 
 import uuid
-
-from rest_framework.response import Response
 
 
 class CreateSellerView(generics.CreateAPIView):
@@ -48,8 +49,10 @@ class ShowSalesView(generics.ListAPIView):
 
 
 class ShowSalesBySellerView(generics.ListAPIView):
-    # permission_classes = (permissions.IsAdminUser,)
-    serializer_class = ShowSalesSerializer
+    permission_classes = (permissions.IsAdminUser,)
+    serializer_class = ShowSalesBySellerSerializer
 
     def get(self, request, *args, **kwargs):
+        user = self.request.user
+
         return Response({"message": "we're working on it"})

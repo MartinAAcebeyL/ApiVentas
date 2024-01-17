@@ -24,3 +24,6 @@ flush:
 
 seed_products_categories_stocks:
 	python manage.py seed_categories
+
+delete_py_cache:
+	find . -name '__pycache__' -type d -exec rm -rf {} +
