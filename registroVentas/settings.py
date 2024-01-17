@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "apps.users",
     "apps.sellers",
-    "apps.clients",
     "apps.products",
     "apps.sales",
     "xhtml2pdf",
