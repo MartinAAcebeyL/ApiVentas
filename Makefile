@@ -21,3 +21,6 @@ shell:
 
 flush:
 	python manage.py flush
+
+seed_products_categories_stocks:
+	python manage.py seed_categories
