@@ -1,15 +1,21 @@
 from rest_framework import serializers
-from .models import Seller
 from apps.sales.models import SaleDetail, Sale
 from apps.products.serializers import ProductSerializer
 from apps.products.models import Product
 from apps.sales.serialisers import SaleSerializer
+from apps.users.models import User
 
 
 class SellerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Seller
+        model = User
         fields = "__all__"
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
 
 
 class ShowSalesSerializer(serializers.ModelSerializer):
@@ -38,3 +44,13 @@ class ShowSalesSerializer(serializers.ModelSerializer):
             return product_serializer.data
         except:
             pass
+
+
+class ShowSalesBySellerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SaleDetail
+        fields = "__all__"
+
+    def get_queryset(self):
+        user = self.request.user
+        return SaleDetail.objects.filter(sale__seller=user)
