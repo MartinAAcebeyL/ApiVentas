@@ -29,15 +29,6 @@ class SaleDetail(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
-    def save(
-        self,
-        force_insert: bool = ...,
-        force_update: bool = ...,
-        using: str | None = ...,
-        update_fields: Iterable[str] | None = ...,
-    ) -> None:
-        self.total = self.quantity * self.unit_price
-        super().save(force_insert, force_update, using, update_fields)
 
     @classmethod
     def get_total_price_between_dates(cls, start_date: str, end_date: str) -> float:

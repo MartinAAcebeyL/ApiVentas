@@ -1,9 +1,10 @@
-from rest_framework import serializers
-from apps.sales.models import SaleDetail, Sale
 from apps.products.serializers import ProductSerializer
-from apps.products.models import Product
 from apps.sales.serialisers import SaleSerializer
+from apps.sales.models import SaleDetail, Sale
+from apps.products.models import Product
 from apps.users.models import User
+
+from rest_framework import serializers
 
 
 class SellerSerializer(serializers.ModelSerializer):
