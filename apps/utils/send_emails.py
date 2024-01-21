@@ -1,5 +1,5 @@
 from django.core import mail
-
+import logging
 
 def send_email(message: str, from_email: str, to_emails: list[str],
                subject: str, html_message: str = None,
@@ -14,4 +14,4 @@ def send_email(message: str, from_email: str, to_emails: list[str],
 
         email.send(fail_silently=False)
     except Exception as e:
-        print("SMTP ERROR: ", e)
+        logging.error("Error: ", e)

@@ -17,6 +17,8 @@ from .serialisers import SaleDetailSerializer
 from .utils import link_callback
 from .models import Sale, SaleDetail
 
+import logging
+
 
 class CreateSaleView(APIView):
     permission_classes = (permissions.IsAdminUser,)
@@ -138,7 +140,7 @@ class MakePDFReportSaleView(APIView):
                     {"message": "Dates are wrong"}, status=status.HTTP_400_BAD_REQUEST
                 )
         except Exception as e:
-            print("error: ", e)
+            logging.error("Error: ", e)
             return Response(
                 {"message": "Invalid dates"}, status=status.HTTP_400_BAD_REQUEST
             )
