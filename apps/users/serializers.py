@@ -1,9 +1,10 @@
-from rest_framework import serializers
-from apps.sales.models import SaleDetail, Sale
 from apps.products.serializers import ProductSerializer
-from apps.products.models import Product
 from apps.sales.serialisers import SaleSerializer
+from apps.sales.models import SaleDetail, Sale
+from apps.products.models import Product
 from apps.users.models import User
+
+from rest_framework import serializers
 
 
 class SellerSerializer(serializers.ModelSerializer):
@@ -44,13 +45,3 @@ class ShowSalesSerializer(serializers.ModelSerializer):
             return product_serializer.data
         except:
             pass
-
-
-class ShowSalesBySellerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SaleDetail
-        fields = "__all__"
-
-    def get_queryset(self):
-        user = self.request.user
-        return SaleDetail.objects.filter(sale__seller=user)

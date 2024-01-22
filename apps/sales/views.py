@@ -1,21 +1,23 @@
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import permissions, status
 
-from django.db.models import Sum, Count, F
-from django.utils import timezone
 from django.template.loader import get_template
+from django.db.models import Sum, Count, F
 from django.http import HttpResponse
+from django.utils import timezone
 
+from utils import get_date_minus_period
 from datetime import datetime
 from xhtml2pdf import pisa
-from utils import get_date_minus_period, show_query_sets
 
-from .models import SaleDetail
-from .serialisers import SaleDetailSerializer
-from .utils import link_callback
 from apps.sales.models import SaleDetail, Shipment
 from apps.products.models import Category, Stock
+from .serialisers import SaleDetailSerializer
+from .utils import link_callback
+from .models import Sale, SaleDetail
+
+import logging
 
 
 class CreateSaleView(APIView):
@@ -25,16 +27,33 @@ class CreateSaleView(APIView):
     def post(self, request):
         serializer = CreateSaleView.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.validated_data["seller"] = request.user
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            products = serializer.validated_data.get("sale").get("product")
+
+            sale = Sale.objects.create(
+                seller=request.user,
+            )
+            sale.product.set(products)
+            sale.save()
+
+            sale_detail = SaleDetail.objects.create(
+                sale=sale,
+                quantity=serializer.validated_data.get("quantity"),
+                payment_method=serializer.validated_data.get("payment_method"),
+                unit_price=serializer.validated_data.get("unit_price"),
+                total=serializer.validated_data.get("quantity")
+                * serializer.validated_data.get("unit_price"),
+            )
+            sale_detail.save()
+
+            return Response(
+                {"message": "Sale created", "data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateGraphicReportSalesView(APIView):
-    def get_sales_per_sellers(self):
-        pass
-
     def get_sales_over_time(self):
         sales_over_time = (
             SaleDetail.objects.filter(
@@ -121,7 +140,7 @@ class MakePDFReportSaleView(APIView):
                     {"message": "Dates are wrong"}, status=status.HTTP_400_BAD_REQUEST
                 )
         except Exception as e:
-            print("error: ", e)
+            logging.error("Error: ", e)
             return Response(
                 {"message": "Invalid dates"}, status=status.HTTP_400_BAD_REQUEST
             )

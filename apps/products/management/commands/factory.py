@@ -21,7 +21,7 @@ def create_product(amount: int = 10):
             description=fake.text(),
             weight=random.randint(1, 10),
             price=price,
-            minimum_stock=random.randint(1, 1000),
+            minimum_stock=random.randint(1, 50),
         )
         random_category = random.choice(Category.objects.all())
         product.category = random_category
@@ -62,8 +62,8 @@ def create_stock(amount: int = 10):
 
     def create_single_stock():
         stock = Stock(
-            quantity=random.randint(1, 1000),
-            current_quantity=random.randint(1, 100),
+            quantity=random.randint(500, 1000),
+            current_quantity=random.randint(1, 500),
         )
         randon_product = random.choice(Product.objects.all())
         stock.save()
