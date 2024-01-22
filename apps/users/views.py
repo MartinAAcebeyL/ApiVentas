@@ -1,14 +1,15 @@
 from rest_framework.viewsets import generics
 from rest_framework.response import Response
-from rest_framework import permissions
+from rest_framework import permissions, status
 from django.utils import timezone
 
 from .serializers import (
     SellerSerializer,
     ShowSalesSerializer,
-    ShowSalesBySellerSerializer,
 )
 from apps.sales.models import SaleDetail
+from apps.users.usecases import get_sales_by_user
+
 
 import uuid
 
@@ -50,9 +51,14 @@ class ShowSalesView(generics.ListAPIView):
 
 class ShowSalesBySellerView(generics.ListAPIView):
     permission_classes = (permissions.IsAdminUser,)
-    serializer_class = ShowSalesBySellerSerializer
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
-
-        return Response({"message": "we're working on it"})
+        try:
+            data = get_sales_by_user.get_sales_by_seller(user)
+            return Response(
+                {"data": data, "message": "Data successfully recovered"},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)

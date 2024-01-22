@@ -45,13 +45,3 @@ class ShowSalesSerializer(serializers.ModelSerializer):
             return product_serializer.data
         except:
             pass
-
-
-class ShowSalesBySellerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SaleDetail
-        fields = "__all__"
-
-    def get_queryset(self):
-        user = self.request.user
-        return SaleDetail.objects.filter(sale__seller=user)
