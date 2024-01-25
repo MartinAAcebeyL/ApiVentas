@@ -17,8 +17,11 @@ from apps.products.models import Category, Stock
 from .serialisers import SaleDetailSerializer
 from .models import Sale, SaleDetail
 from .utils import link_callback
+from apps.products.models import Stock
+
 
 import logging
+import time
 
 
 class CreateSaleView(APIView):
@@ -28,9 +31,13 @@ class CreateSaleView(APIView):
     serializer_class = SaleDetailSerializer
 
     def post(self, request):
+        start_time = time.time()
         serializer = CreateSaleView.serializer_class(data=request.data)
         if serializer.is_valid():
+            quantity = serializer.validated_data.get("quantity")
             products = serializer.validated_data.get("sale").get("product")
+            stock = Stock.objects.filter(product=products[0])[0]
+            Stock.update_stock(id=stock.id, amount=quantity)
 
             sale = Sale.objects.create(
                 seller=request.user,
@@ -40,20 +47,31 @@ class CreateSaleView(APIView):
 
             sale_detail = SaleDetail.objects.create(
                 sale=sale,
-                quantity=serializer.validated_data.get("quantity"),
+                quantity=quantity,
                 payment_method=serializer.validated_data.get("payment_method"),
                 unit_price=serializer.validated_data.get("unit_price"),
-                total=serializer.validated_data.get("quantity")
-                * serializer.validated_data.get("unit_price"),
+                total=quantity * serializer.validated_data.get("unit_price"),
             )
             sale_detail.save()
 
+            end_time = time.time()
             return Response(
-                {"message": "Sale created", "data": serializer.data},
+                {
+                    "message": "Sale created",
+                    "data": serializer.data,
+                    "meta": {"exec_seconds": f"{(end_time - start_time):.3f}"},
+                },
                 status=status.HTTP_201_CREATED,
             )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        end_time = time.time()
+        return Response(
+            {
+                "errors": serializer.errors,
+                "meta": {"exec_seconds": f"{(end_time - start_time):.3f}"},
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 class CreateGraphicReportSalesView(APIView):
