@@ -1,9 +1,9 @@
+from typing import Any
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from django.template.loader import get_template
-from django.db.models import Sum, Count, F
 from django.http import HttpResponse
 from django.utils import timezone
 
@@ -11,6 +11,7 @@ from utils import get_date_minus_period
 from datetime import datetime
 from xhtml2pdf import pisa
 
+from apps.sales.usecases.create_graphic_report_usecase import CreateGraphicReportUseCase
 from apps.sales.models import SaleDetail, Shipment
 from apps.products.models import Category, Stock
 from .serialisers import SaleDetailSerializer
@@ -21,6 +22,8 @@ import logging
 
 
 class CreateSaleView(APIView):
+    """View to create a new sale"""
+
     permission_classes = (permissions.IsAdminUser,)
     serializer_class = SaleDetailSerializer
 
@@ -54,58 +57,38 @@ class CreateSaleView(APIView):
 
 
 class CreateGraphicReportSalesView(APIView):
-    def get_sales_over_time(self):
-        sales_over_time = (
-            SaleDetail.objects.filter(
-                created_at__range=(self.start_date, self.current_time)
-            )
-            .values(created_at_date=F("created_at__date"))
-            .annotate(total_sales=Sum("total"))
-            .order_by("created_at")
-        )
-        return sales_over_time
+    """View to Graphic report"""
 
-    def get_sales_by_categories(self):
-        sales_group_by_category = (
-            SaleDetail.objects.filter(
-                created_at__range=(self.start_date, self.current_time)
-            )
-            .values(category_name=F("sale__product__category__name"))
-            .annotate(total_sales=Sum("total"), sales_count=Count("sale__id"))
-        )
-        return sales_group_by_category
+    permission_classes = (permissions.IsAdminUser,)
 
-    def get_sales_by_products(self):
-        product_sales = (
-            SaleDetail.objects.filter(
-                created_at__range=(self.start_date, self.current_time)
-            )
-            .values("sale__product__name")
-            .annotate(total_sales=Sum("total"), sales_count=Count("sale__id"))
-        )
-
-        return product_sales
-
-    def count_payment_method_usage(self):
-        payment_method_count = (
-            SaleDetail.objects.values("payment_method")
-            .filter(created_at__range=(self.start_date, self.current_time))
-            .annotate(usage_count=Count("payment_method"))
-        )
-
-        return payment_method_count
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.create_graphic_report = CreateGraphicReportUseCase()
 
     def get(self, request, period: int, per: str):
-        self.start_date = get_date_minus_period(period, per)
-        self.current_time = timezone.now()
+        """
+        Get graphical sales reports based on the period and time unit provided.
 
+        Args:
+        - request: Django request object.
+        - period (int): Time period backwards in days.
+        - per (str): Unit of time (e.g. 'days', 'weeks', 'months').
+
+        Returns:
+        - Response: Django REST Framework response object with json report data.
+        """
+
+        self.create_graphic_report.start_date = get_date_minus_period(period, per)
+        self.create_graphic_report.current_time = timezone.now()
         try:
-            sales_over_time = self.get_sales_over_time()
-            sales_by_category = self.get_sales_by_categories()
-            sales_by_product = self.get_sales_by_products()
-            count_payment_method_usage = self.count_payment_method_usage()
+            sales_over_time = self.create_graphic_report.get_sales_over_time()
+            sales_by_category = self.create_graphic_report.get_sales_by_categories()
+            sales_by_product = self.create_graphic_report.get_sales_by_products()
+            count_payment_method_usage = (
+                self.create_graphic_report.count_payment_method_usage()
+            )
 
-            data = {
+            response_data = {
                 "sales_over_time": sales_over_time,
                 "sales_by_category": sales_by_category,
                 "sales_by_product": sales_by_product,
@@ -113,11 +96,12 @@ class CreateGraphicReportSalesView(APIView):
             }
 
             return Response(
-                {"message": "Data returned", "data": data}, status=status.HTTP_200_OK
+                {"message": "Data returned ", "data": response_data},
+                status=status.HTTP_200_OK,
             )
         except Exception as e:
             return Response(
-                {"message": "Something went wrong", "error": e.message, "data": []},
+                {"message": "Something went wrong", "error": str(e), "data": []},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 

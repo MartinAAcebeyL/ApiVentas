@@ -15,6 +15,8 @@ import uuid
 
 
 class CreateSellerView(generics.CreateAPIView):
+    """View to register new Seller but without admin permissions"""
+
     serializer_class = SellerSerializer
 
 
@@ -50,6 +52,8 @@ class ShowSalesView(generics.ListAPIView):
 
 
 class ShowSalesBySellerView(generics.ListAPIView):
+    """View to return sales of user authenticated"""
+
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request, *args, **kwargs):
