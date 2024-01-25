@@ -14,8 +14,8 @@ from xhtml2pdf import pisa
 from apps.sales.models import SaleDetail, Shipment
 from apps.products.models import Category, Stock
 from .serialisers import SaleDetailSerializer
-from .utils import link_callback
 from .models import Sale, SaleDetail
+from .utils import link_callback
 
 import logging
 
@@ -123,13 +123,16 @@ class CreateGraphicReportSalesView(APIView):
 
 
 class MakePDFReportSaleView(APIView):
-    # permission_classes = (permissions.IsAdminUser,)
+    """View to generate a PDF as a report"""
+
+    permission_classes = (permissions.IsAdminUser,)
+
     def get(self, request):
         # get the query params from the request
         now = datetime.today()
-        start_date = request.query_params.get("start_date", "2022-01-01")
+        default_start_date = "2022-01-01"
+        start_date = request.query_params.get("start_date", default_start_date)
         end_date = request.query_params.get("end_date", now.strftime("%Y-%m-%d"))
-
         # we check the dates
         try:
             start_date = datetime.strptime(start_date, "%Y-%m-%d")
@@ -140,13 +143,12 @@ class MakePDFReportSaleView(APIView):
                     {"message": "Dates are wrong"}, status=status.HTTP_400_BAD_REQUEST
                 )
         except Exception as e:
-            logging.error("Error: ", e)
+            logging.error(f"Error: {e}")
             return Response(
                 {"message": "Invalid dates"}, status=status.HTTP_400_BAD_REQUEST
             )
-
         template_path = "sales_report.html"
-        applicants_name = "NOMBRE DEL SOLICITANTE"
+        applicants_name = request.user.first_name
         date = now.strftime("%d-%m-%Y")
 
         sales = SaleDetail.get_total_price_between_dates(start_date, end_date)
