@@ -7,7 +7,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse
 from django.utils import timezone
 
-from utils import get_date_minus_period
+from apps.utils.dates import get_date_minus_period
 from datetime import datetime
 from xhtml2pdf import pisa
 

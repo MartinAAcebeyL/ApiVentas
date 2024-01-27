@@ -1,6 +1,5 @@
-from collections.abc import Iterable
-from django.db import models
 from django.db.models import F, Sum
+from django.db import models
 
 
 class Sale(models.Model):

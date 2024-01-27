@@ -14,4 +14,4 @@ def send_email(message: str, from_email: str, to_emails: list[str],
 
         email.send(fail_silently=False)
     except Exception as e:
-        logging.error("Error: ", e)
+        logging.error(e)

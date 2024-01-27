@@ -6,6 +6,8 @@ from apps.users.models import User
 
 from rest_framework import serializers
 
+import logging
+
 
 class SellerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,5 +45,5 @@ class ShowSalesSerializer(serializers.ModelSerializer):
                 Product.objects.get(id=sale.product.first().id)
             )
             return product_serializer.data
-        except:
-            pass
+        except Exception as e:
+            logging.error(e)

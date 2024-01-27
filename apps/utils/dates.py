@@ -19,8 +19,9 @@ def get_date_minus_period(period: int, per: str):
     return start_date
 
 
-def show_query_sets(d: dict) -> None:
-    logging.info(" Query sets ".center(100, "*"))
-    for i in d:
-        logging.info(i)
-    logging.info("*" * 100)
+def format_date(date: str, _format: str):
+    try:
+        return timezone.datetime.strptime(date, _format)
+    except Exception as e:
+        logging.error(e)
+        raise ValueError("Format of date wrong")
