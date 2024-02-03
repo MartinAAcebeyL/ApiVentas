@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:5000"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    volumes:
+      - ./app:/app
+
+  db:
+    image: postgres:alpine
+    ports:
+      - "5430:${DATABASE_PORT}"
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
