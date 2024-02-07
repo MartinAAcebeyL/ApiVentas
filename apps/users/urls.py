@@ -3,8 +3,20 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from .views import (
+    CreateSellerView,
+    ShowFilterSalesView,
+    ShowSalesBySellerView,
+)
 
 urlpatterns = [
-    path("token/login", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("login", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("create/", CreateSellerView.as_view(), name="create_seller"),
+    path("filter/sales", ShowFilterSalesView.as_view(), name="show_sales"),
+    path(
+        "me/sales",
+        ShowSalesBySellerView.as_view(),
+        name="show_sales_by_seller",
+    ),
 ]

@@ -28,8 +28,3 @@ class User(AbstractUser):
         blank=True,
         related_name="custom_user_set",
     )
-
-    def save(self, *args, **kwargs):
-        if self.password:
-            self.set_password(self.password)
-        super().save(*args, **kwargs)

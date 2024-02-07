@@ -1,21 +1,17 @@
-# Api para las ventas y devoluciones, de la empresa de ventas de gadgets.
-Este archivo README proporciona las instrucciones necesarias para instalar y configurar correctamente un proyecto basado en Django.
+# Api para registro de ventas, generacion de reportes PDF.
+Este archivo README proporciona las instrucciones necesarias para instalar y configurar correctamente un proyecto basado en Django Rest.
 ## Requisitos previos
 Asegúrate de tener instalados los siguientes componentes antes de comenzar:
-* Python (versión 3.9 o superior)
-* Pip (administrador de paquetes de Python)
+* Docker
+* Docker Compose
 ## Pasos de instalación
 1. Clona el repositorio del proyecto desde GitHub:
 ```https://github.com/MartinAAcebeyL/ApiVentas.git```
-2. Crea y activa un entorno virtual para el proyecto:
+2. Crea tu archivo .env en base a el .env.example
+3. Ejecuta el comando
 
-    ```python3 -m venv myenv```
-
-    ```source myenv/bin/activate```
-3. Instala las dependencias del proyecto utilizando.
-
-    ```pip install -r requirements.txt```
-4. Inicia el servidor de desarrollo:
+    ```docker-compose up --build```
     
-    ```python manage.py runserver```
-5. Abre un navegador web y accede a http://localhost:8000 para ver la aplicación en funcionamiento.
+Y listo, ya tendrias el proyecto isntalado. Ahora cada vez que quieras levantar el proyecto, debes ejecutar
+
+```docker-compose up```
