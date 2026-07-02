@@ -1,6 +1,6 @@
 env/
 __pycache__
 
-.env
+.venv
 .coverage
 graphify_env/

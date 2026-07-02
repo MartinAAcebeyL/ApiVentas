@@ -1,14 +1,15 @@
-FROM python:3.10-alpine
+FROM python:3.12-slim
 
-# Instala libfreetype6-dev
-RUN apk update && \
-    apk add --no-cache build-base freetype-dev
-ENV PYTHONUNBUFFERED 1
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libpq-dev libfreetype6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
-COPY requirements_prod.txt requirements_dev.txt /app/
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install -r requirements_prod.txt
-RUN pip install -r requirements_dev.txt
+COPY . .
 
-COPY . /app
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
