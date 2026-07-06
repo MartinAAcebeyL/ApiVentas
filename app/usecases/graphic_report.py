@@ -2,7 +2,7 @@ from datetime import date
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.models.sale import Sale, SaleDetail
-from app.models.product import Product, Category, Stock
+from app.models.product import Product, Category
 
 
 class CreateGraphicReportUseCase:
