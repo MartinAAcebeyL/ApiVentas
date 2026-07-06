@@ -12,7 +12,8 @@ from app.db.session import get_db
 from app.core.deps import get_current_admin
 from app.models.user import User
 from app.models.sale import Sale, SaleDetail, Shipment
-from app.models.product import Product, Category, Stock
+from app.models.product import Product, Category
+from app.models.imports import ImportItem, CityStock
 from app.usecases.graphic_report import CreateGraphicReportUseCase
 
 router = APIRouter()
@@ -82,13 +83,23 @@ async def pdf_report(
         total_shipment = sum(float(r.Shipment.shipment_cost) if r.Shipment else 0 for r in rows)
         total_general += total_sales
 
-        # Stock de esta categoría
-        stock_q = await db.execute(
-            select(func.sum(Stock.current_quantity), func.sum(Stock.quantity))
-            .join(Product, Stock.product_id == Product.id)
-            .where(Product.category_id == cat.id)
-        )
-        stock_row = stock_q.first()
+        # Stock de esta categoría: restante desde city_stocks, comprado desde import_items
+        remaining = (
+            await db.execute(
+                select(func.coalesce(func.sum(CityStock.quantity), 0))
+                .join(ImportItem, CityStock.import_item_id == ImportItem.id)
+                .join(Product, ImportItem.product_id == Product.id)
+                .where(Product.category_id == cat.id)
+            )
+        ).scalar_one()
+        bought = (
+            await db.execute(
+                select(func.coalesce(func.sum(ImportItem.quantity), 0))
+                .join(Product, ImportItem.product_id == Product.id)
+                .where(Product.category_id == cat.id)
+            )
+        ).scalar_one()
+        stock_row = (remaining, bought)
 
         products_detail = [
             {
