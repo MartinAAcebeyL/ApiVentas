@@ -1,0 +1,403 @@
+{
+  "communities": {
+    "0": [
+      "apiview",
+      "products_models_stock",
+      "products_models_stock_get_current_quantity_by_product_category",
+      "products_models_stock_update_stock",
+      "sales_models",
+      "sales_models_meta",
+      "sales_models_sale",
+      "sales_models_saledetail",
+      "sales_models_saledetail_get_sale_details_between_dates_and_category",
+      "sales_models_saledetail_get_total_price_between_dates",
+      "sales_models_saledetail_get_total_price_between_dates_and_category",
+      "sales_models_shipment",
+      "sales_models_shipment_get_shipment_by_sale",
+      "sales_models_shipment_get_shipment_cost_between_dates_and_category",
+      "sales_serialisers",
+      "sales_serialisers_meta",
+      "sales_serialisers_saledetailserializer",
+      "sales_signals",
+      "sales_signals_check_minimum_stock",
+      "sales_urls",
+      "sales_utils",
+      "sales_utils_link_callback",
+      "sales_views",
+      "sales_views_creategraphicreportsalesview",
+      "sales_views_createsaleview",
+      "sales_views_createsaleview_post",
+      "sales_views_makepdfreportsaleview",
+      "sales_views_makepdfreportsaleview_get",
+      "sales_views_rationale_128",
+      "sales_views_rationale_28",
+      "sales_views_rationale_78",
+      "test_test_create_sale",
+      "utils_send_emails",
+      "utils_send_emails_send_email"
+    ],
+    "1": [
+      "products_models",
+      "products_models_category",
+      "products_models_meta",
+      "products_models_product",
+      "products_serializers",
+      "products_serializers_categoryserializer",
+      "products_serializers_meta",
+      "products_serializers_productserializer",
+      "sales_serialisers_saleserializer",
+      "users_serializers",
+      "users_serializers_meta",
+      "users_serializers_sellerserializer",
+      "users_serializers_showsalesserializer",
+      "users_serializers_showsalesserializer_get_sale_products",
+      "users_urls",
+      "users_views",
+      "users_views_createsellerview",
+      "users_views_rationale_18",
+      "users_views_rationale_24",
+      "users_views_rationale_70",
+      "users_views_showfiltersalesview",
+      "users_views_showfiltersalesview_get_queryset",
+      "users_views_showfiltersalesview_list",
+      "users_views_showsalesbysellerview",
+      "users_views_showsalesbysellerview_get"
+    ],
+    "2": [
+      "apitestcase",
+      "test_init_testbase",
+      "test_init_testbase_teardownclass",
+      "test_test_create_sale_testcreatesaleview",
+      "test_test_create_sale_testcreatesaleview_test_create_invalid_sale",
+      "test_test_create_sale_testcreatesaleview_test_create_sale",
+      "testbase",
+      "tests_init",
+      "tests_init_testbase",
+      "tests_init_testbase_setupclass",
+      "tests_init_testbase_teardownclass",
+      "tests_test_show_sales",
+      "tests_test_show_sales_testshowsales",
+      "tests_test_show_sales_testshowsales_test_filter_by_category",
+      "tests_test_show_sales_testshowsales_test_filter_by_dates",
+      "tests_test_show_sales_testshowsales_test_filter_by_seller",
+      "tests_test_show_sales_testshowsales_test_sorting"
+    ],
+    "3": [
+      "docker_compose",
+      "docker_compose_app",
+      "docker_compose_db",
+      "logo",
+      "postgres",
+      "readme",
+      "requirements_prod",
+      "requirements_prod_django",
+      "requirements_prod_djangorestframework",
+      "requirements_prod_djangorestframework_simplejwt",
+      "requirements_prod_psycopg2_binary",
+      "requirements_prod_pypdf",
+      "requirements_prod_python_decouple",
+      "requirements_prod_xhtml2pdf",
+      "sales_report"
+    ],
+    "4": [
+      "abstractuser",
+      "apps_users_usecases_init_py_usecases_init",
+      "test_init",
+      "usecases_getsalesbyuser",
+      "usecases_getsalesbyuser_getsalesbyuser",
+      "usecases_getsalesbyuser_getsalesbyuser_get_last_sale_by_category",
+      "usecases_getsalesbyuser_getsalesbyuser_get_sale_products_by_category_and_date",
+      "usecases_getsalesbyuser_getsalesbyuser_get_sales_by_seller",
+      "usecases_getsalesbyuser_getsalesbyuser_get_total_sales_and_quantuty",
+      "usecases_getsalesbyuser_getsalesbyuser_mix_sales_by_category_and_date",
+      "users_models",
+      "users_models_meta",
+      "users_models_user",
+      "users_serializers_sellerserializer_create"
+    ],
+    "5": [
+      "basecommand",
+      "commands_factory",
+      "commands_factory_create_category",
+      "commands_factory_create_history_price",
+      "commands_factory_create_product",
+      "commands_factory_create_stock",
+      "commands_factory_rationale_10",
+      "commands_factory_rationale_40",
+      "commands_seed_categories",
+      "commands_seed_categories_command",
+      "commands_seed_categories_command_add_arguments",
+      "commands_seed_categories_command_handle",
+      "products_models_historyprice",
+      "test_init_testbase_setupclass"
+    ],
+    "6": [
+      "any",
+      "sales_views_creategraphicreportsalesview_init",
+      "usecases_create_graphic_report_usecase",
+      "usecases_create_graphic_report_usecase_creategraphicreportusecase",
+      "usecases_create_graphic_report_usecase_creategraphicreportusecase_count_payment_method_usage",
+      "usecases_create_graphic_report_usecase_creategraphicreportusecase_get_sales_by_categories",
+      "usecases_create_graphic_report_usecase_creategraphicreportusecase_get_sales_by_products",
+      "usecases_create_graphic_report_usecase_creategraphicreportusecase_get_sales_over_time"
+    ],
+    "7": [
+      "appconfig",
+      "products_apps",
+      "products_apps_productsconfig",
+      "sales_apps",
+      "sales_apps_salesconfig",
+      "sales_apps_salesconfig_ready",
+      "users_apps",
+      "users_apps_usersconfig"
+    ],
+    "8": [
+      "requirements_dev",
+      "requirements_dev_coverage",
+      "requirements_dev_faker",
+      "requirements_dev_pillow",
+      "requirements_dev_pyjwt"
+    ],
+    "9": [
+      "sales_views_creategraphicreportsalesview_get",
+      "sales_views_rationale_87",
+      "utils_dates",
+      "utils_dates_format_date",
+      "utils_dates_get_date_minus_period"
+    ],
+    "10": [
+      "manage",
+      "manage_main",
+      "manage_rationale_6"
+    ],
+    "11": [
+      "apps_products_migrations_0001_initial_py_migrations_0001_initial",
+      "apps_products_migrations_0001_initial_py_migrations_0001_initial_migration"
+    ],
+    "12": [
+      "apps_sales_migrations_0001_initial_py_migrations_0001_initial",
+      "apps_sales_migrations_0001_initial_py_migrations_0001_initial_migration"
+    ],
+    "13": [
+      "apps_users_migrations_0001_initial_py_migrations_0001_initial",
+      "apps_users_migrations_0001_initial_py_migrations_0001_initial_migration"
+    ],
+    "14": [
+      "migrations_0002_initial",
+      "migrations_0002_initial_migration"
+    ],
+    "15": [
+      "registroventas_asgi",
+      "registroventas_asgi_rationale_1"
+    ],
+    "16": [
+      "registroventas_wsgi",
+      "registroventas_wsgi_rationale_1"
+    ],
+    "17": [
+      "utils_printers",
+      "utils_printers_show_query_sets"
+    ],
+    "18": [
+      "apps_products_migrations_init_py_migrations_init"
+    ],
+    "19": [
+      "apps_sales_migrations_init_py_migrations_init"
+    ],
+    "20": [
+      "apps_sales_usecases_init_py_usecases_init"
+    ],
+    "21": [
+      "apps_users_migrations_init_py_migrations_init"
+    ],
+    "22": [
+      "products_admin"
+    ],
+    "23": [
+      "products_init"
+    ],
+    "24": [
+      "products_tests"
+    ],
+    "25": [
+      "products_views"
+    ],
+    "26": [
+      "registroventas_init"
+    ],
+    "27": [
+      "registroventas_settings"
+    ],
+    "28": [
+      "registroventas_urls"
+    ],
+    "29": [
+      "sales_admin"
+    ],
+    "30": [
+      "sales_init"
+    ],
+    "31": [
+      "users_admin"
+    ],
+    "32": [
+      "users_init"
+    ],
+    "33": [
+      "users_tests"
+    ],
+    "34": [
+      "utils_init"
+    ]
+  },
+  "cohesion": {
+    "0": 0.11764705882352941,
+    "1": 0.18666666666666668,
+    "2": 0.125,
+    "3": 0.1619047619047619,
+    "4": 0.25274725274725274,
+    "5": 0.23076923076923078,
+    "6": 0.25,
+    "7": 0.25,
+    "8": 0.4,
+    "9": 0.4,
+    "10": 0.6666666666666666,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0
+  },
+  "gods": [
+    {
+      "id": "sales_models_saledetail",
+      "label": "SaleDetail",
+      "degree": 17
+    },
+    {
+      "id": "products_models_product",
+      "label": "Product",
+      "degree": 12
+    },
+    {
+      "id": "sales_models_sale",
+      "label": "Sale",
+      "degree": 12
+    },
+    {
+      "id": "sales_views_creategraphicreportsalesview",
+      "label": "CreateGraphicReportSalesView",
+      "degree": 12
+    },
+    {
+      "id": "products_models_category",
+      "label": "Category",
+      "degree": 11
+    },
+    {
+      "id": "sales_views_createsaleview",
+      "label": "CreateSaleView",
+      "degree": 11
+    },
+    {
+      "id": "sales_views_makepdfreportsaleview",
+      "label": "MakePDFReportSaleView",
+      "degree": 11
+    },
+    {
+      "id": "products_models_stock",
+      "label": "Stock",
+      "degree": 10
+    },
+    {
+      "id": "usecases_create_graphic_report_usecase_creategraphicreportusecase",
+      "label": "CreateGraphicReportUseCase",
+      "degree": 10
+    },
+    {
+      "id": "users_models_user",
+      "label": "User",
+      "degree": 10
+    }
+  ],
+  "surprises": [
+    {
+      "source": "API Ventas Installation and Setup Guide",
+      "target": "Sales Report HTML Template",
+      "source_files": [
+        "README.md",
+        "apps/sales/templates/sales_report.html"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Django Application Service",
+      "target": "Production Dependencies",
+      "source_files": [
+        "docker-compose.yaml",
+        "requirements_prod.txt"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Sales Report HTML Template",
+      "target": "PyPDF PDF Manipulation Library",
+      "source_files": [
+        "apps/sales/templates/sales_report.html",
+        "requirements_prod.txt"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Sales Report HTML Template",
+      "target": "XHTML2PDF PDF Generation Library",
+      "source_files": [
+        "apps/sales/templates/sales_report.html",
+        "requirements_prod.txt"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "CreateGraphicReportSalesView",
+      "target": "Category",
+      "source_files": [
+        "apps/sales/views.py",
+        "apps/products/models.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    }
+  ],
+  "tokens": {
+    "input": 32129,
+    "output": 7850
+  }
+}
