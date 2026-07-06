@@ -1,73 +1,77 @@
 # ApiVentas — FastAPI
 
-API para registro de ventas y generación de reportes PDF, migrada de Django REST Framework a **FastAPI + SQLAlchemy 2.0 async + Alembic**.
+API + dashboard para registro de ventas por **lotes de importación**: costos unitarios, recuperación de inversión y stock por ciudad. Construida con **FastAPI + SQLAlchemy 2.0 async + PostgreSQL**.
 
 ## Requisitos previos
 
-- Docker
-- Docker Compose
+- Docker y Docker Compose
 
 ## Instalación y arranque
 
 ```bash
-# 1. Clona el repositorio
 git clone https://github.com/MartinAAcebeyL/ApiVentas.git
-cd ApiVentas/fastapi_app
-
-# 2. Crea tu archivo .env
-cp .env.example .env
-# Edita .env con tus credenciales
-
-# 3. Levanta los servicios
+cd ApiVentas
+cp .env.example .env   # editar credenciales
 docker compose up --build
 
-# La API queda disponible en http://localhost:8000
-# Documentación interactiva: http://localhost:8000/docs
+# API:       http://localhost:8000/docs
+# Dashboard: http://localhost:8000/dashboard
 ```
 
-## Migraciones de base de datos
+## Esquema de base de datos
+
+El proyecto **no ejecuta migraciones**: el esquema se administra directamente en la BD aplicando los scripts de `db/schema/` en orden:
 
 ```bash
-# Dentro del contenedor
-docker compose exec app alembic upgrade head
-
-# O local (con el venv activo y DATABASE_URL en .env)
-alembic upgrade head
+psql "$DATABASE_URL" -f db/schema/001_initial.sql
+psql "$DATABASE_URL" -f db/schema/002_lotes_importacion.sql
 ```
+
+## Concepto: lotes de importación
+
+Un **lote** agrupa los productos comprados juntos (como una hoja del Excel):
+
+- El **costo de envío del lote** se reparte en partes iguales entre los tipos de producto.
+- `costo unitario = (costo_compra + envío/n_tipos) / cantidad` — se calcula y guarda al crear el lote.
+- El stock se asigna **por ciudad** al crear el lote; cada venta descuenta de un ítem+ciudad.
+- La **recuperación de inversión** compara lo vendido (sin envío al cliente) contra lo invertido.
 
 ## Endpoints principales
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/health` | Healthcheck |
-| POST | `/api/v1/users/` | Registro de vendedor |
-| POST | `/api/v1/auth/login` | Login (devuelve JWT) |
-| POST | `/api/v1/auth/refresh` | Renovar access token |
-| POST | `/api/v1/sales/` | Crear venta |
-| GET | `/api/v1/sales/reports/graphic?period=&per=` | Reporte gráfico |
-| GET | `/api/v1/sales/reports/pdf?start_date=&end_date=` | Reporte PDF |
-| GET | `/api/v1/sales/filter` | Filtrar ventas |
-| GET | `/api/v1/users/me/sales` | Ventas del vendedor actual |
+| POST | `/api/v1/auth/login` | Login (JWT) |
+| POST | `/api/v1/imports/` | Crear lote (ítems + reparto por ciudad) |
+| GET | `/api/v1/imports/` | Lotes con resumen de recuperación |
+| GET | `/api/v1/imports/{id}/metrics` | Métricas completas del lote |
+| POST | `/api/v1/sales/` | Registrar venta (descuenta stock de ciudad) |
+| GET | `/api/v1/stock/by-city` | Stock por ciudad (filtros: lote, producto, ciudad) |
+| GET | `/api/v1/sales/reports/graphic` | Reporte gráfico |
+| GET | `/api/v1/sales/reports/pdf` | Reporte PDF |
 
-## Migración de datos desde Django
+## Dashboard
 
-Si tenés datos en la base de datos de Django y querés migrarlos:
+Interfaz web servida por la misma app (Jinja2, login con cookie):
+
+- `/dashboard` — lotes con barra de recuperación de inversión
+- `/dashboard/imports/{id}` — métricas del lote, stock por ciudad, ventas
+- `/dashboard/sales/new` — registrar venta
+- `/dashboard/imports/new/form` — registrar lote nuevo
+
+## Tests
 
 ```bash
-# 1. Asegúrate de que el target ya tiene el schema (alembic upgrade head)
-# 2. Ejecuta el script de migración
-python scripts/migrate_data.py \
-    --source "postgresql://user:pass@host:port/django_db" \
-    --target "postgresql://user:pass@host:port/fastapi_db"
-```
+# Unit tests (sin DB)
+pytest tests/test_import_costs.py tests/test_import_schemas.py
 
-El script migra todas las tablas en orden de dependencias y valida conteo de filas al final.
+# Integración (requiere Postgres con esquema aplicado)
+docker run -d --rm --name apiventas_test_db -e POSTGRES_PASSWORD=test \
+    -e POSTGRES_DB=apiventas_test -p 55432:5432 postgres:16-alpine
+# aplicar db/schema/*.sql y luego:
+pytest tests/
+```
 
 ## Stack
 
-- **FastAPI** 0.115 + **Uvicorn**
-- **SQLAlchemy** 2.0 async + **Alembic**
-- **PostgreSQL** 16
-- **Pydantic** v2
-- **JWT** via python-jose
-- **PDF** via xhtml2pdf + Jinja2
+- FastAPI + Uvicorn · SQLAlchemy 2.0 async · PostgreSQL 16
+- Pydantic v2 · JWT (python-jose) · Jinja2 · xhtml2pdf
