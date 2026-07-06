@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Ingresar — ApiVentas{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 380px; margin: 80px auto;">
+  <h1>Ingresar</h1>
+  {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+  <form method="post" action="/dashboard/login">
+    <label>Usuario</label>
+    <input name="username" required autofocus />
+    <label>Contraseña</label>
+    <input name="password" type="password" required />
+    <div style="margin-top: 18px;"><button class="btn" type="submit">Entrar</button></div>
+  </form>
+</div>
+{% endblock %}

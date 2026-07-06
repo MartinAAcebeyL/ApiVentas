@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Registrar venta — ApiVentas{% endblock %}
+{% block content %}
+<h1>Registrar venta</h1>
+{% if ok %}<div class="alert ok">{{ ok }}</div>{% endif %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+<div class="card" style="max-width: 520px;">
+  {% if options %}
+  <form method="post" action="/dashboard/sales/new">
+    <label>Producto (lote — ciudad)</label>
+    <select name="item_city" required>
+      {% for o in options %}<option value="{{ o.value }}">{{ o.label }}</option>{% endfor %}
+    </select>
+    <label>Cantidad</label>
+    <input name="quantity" type="number" min="1" required />
+    <label>Precio de venta por unidad (Bs) — no incluye envío</label>
+    <input name="unit_price" type="number" step="0.01" min="0.01" required />
+    <label>Método de pago</label>
+    <select name="payment_method">
+      {% for pm in payment_methods %}<option value="{{ pm }}">{{ pm }}</option>{% endfor %}
+    </select>
+    <div style="margin-top: 18px;"><button class="btn" type="submit">Registrar</button></div>
+  </form>
+  {% else %}
+  <p class="muted">No hay stock disponible en ningún lote. <a href="/dashboard/imports/new/form">Registra un lote</a> primero.</p>
+  {% endif %}
+</div>
+{% endblock %}

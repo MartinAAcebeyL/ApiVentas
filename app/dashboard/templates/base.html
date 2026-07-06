@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}ApiVentas{% endblock %}</title>
+  <style>
+    :root {
+      --bg: #f6f7f9; --card: #fff; --text: #1a202c; --muted: #64748b;
+      --accent: #2563eb; --ok: #16a34a; --err: #dc2626; --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+    nav { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; gap: 20px; align-items: center; }
+    nav a { color: var(--text); text-decoration: none; font-weight: 500; font-size: 14px; }
+    nav a:hover { color: var(--accent); }
+    nav .spacer { flex: 1; }
+    nav .user { color: var(--muted); font-size: 13px; }
+    main { max-width: 960px; margin: 32px auto; padding: 0 24px; }
+    h1 { font-size: 22px; margin: 0 0 20px; }
+    h2 { font-size: 16px; margin: 24px 0 12px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; padding: 8px; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 8px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+    tr:last-child td { border-bottom: none; }
+    .bar { background: var(--border); border-radius: 6px; height: 8px; overflow: hidden; min-width: 120px; }
+    .bar > div { background: var(--accent); height: 100%; border-radius: 6px; }
+    .bar.done > div { background: var(--ok); }
+    .num { text-align: right; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .btn { display: inline-block; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 10px 16px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; }
+    .btn:hover { opacity: .92; }
+    label { display: block; font-size: 13px; font-weight: 500; margin: 12px 0 4px; }
+    input, select, textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #fff; }
+    .alert { border-radius: 8px; padding: 12px 14px; font-size: 14px; margin-bottom: 16px; }
+    .alert.ok { background: #f0fdf4; color: var(--ok); border: 1px solid #bbf7d0; }
+    .alert.err { background: #fef2f2; color: var(--err); border: 1px solid #fecaca; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .metric { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+    .metric .v { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .metric .l { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .item-row { display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: 8px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  {% block nav %}
+  <nav>
+    <a href="/dashboard"><b>ApiVentas</b></a>
+    <a href="/dashboard">Lotes</a>
+    <a href="/dashboard/sales/new">Registrar venta</a>
+    <a href="/dashboard/imports/new/form">Nuevo lote</a>
+    <span class="spacer"></span>
+    {% if user %}<span class="user">{{ user.username }}</span> <a href="/dashboard/logout">Salir</a>{% endif %}
+  </nav>
+  {% endblock %}
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

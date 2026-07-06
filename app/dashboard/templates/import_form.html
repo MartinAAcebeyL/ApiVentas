@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Nuevo lote — ApiVentas{% endblock %}
+{% block content %}
+<h1>Nuevo lote de importación</h1>
+{% if ok %}<div class="alert ok">{{ ok }} — <a href="/dashboard">ver lotes</a></div>{% endif %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+<div class="card">
+  <form method="post" action="/dashboard/imports/new/form">
+    <label>Nombre del lote</label>
+    <input name="name" placeholder="Lote julio 2026" required />
+    <label>Costo de envío del lote (Bs) — se reparte en partes iguales entre los productos</label>
+    <input name="shipping_cost" type="number" step="0.01" min="0" value="0" />
+    <label>Notas (opcional)</label>
+    <input name="notes" />
+
+    <h2>Productos del lote</h2>
+    <p class="muted">Distribución por ciudades: <code>Sucre:60, La Paz:40</code> (debe sumar la cantidad).</p>
+    <div id="items">
+      <div class="item-row">
+        <select name="product_id" required>
+          {% for p in products %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+        </select>
+        <input name="quantity" type="number" min="1" placeholder="Cantidad" required />
+        <input name="purchase_cost" type="number" step="0.01" min="0" placeholder="Costo total (Bs)" required />
+        <input name="distribution" placeholder="Sucre:60, La Paz:40" required />
+      </div>
+    </div>
+    <button type="button" class="btn" style="background:#64748b" onclick="addRow()">+ Agregar producto</button>
+    <div style="margin-top: 18px;"><button class="btn" type="submit">Crear lote</button></div>
+  </form>
+</div>
+<script>
+function addRow() {
+  const row = document.querySelector('#items .item-row').cloneNode(true);
+  row.querySelectorAll('input').forEach(i => i.value = '');
+  document.getElementById('items').appendChild(row);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ m.name }} — ApiVentas{% endblock %}
+{% block content %}
+<h1>{{ m.name }}</h1>
+
+<div class="metrics">
+  <div class="metric"><div class="v">{{ m.investment }} Bs</div><div class="l">Inversión</div></div>
+  <div class="metric"><div class="v">{{ m.recovered }} Bs</div><div class="l">Recuperado</div></div>
+  <div class="metric"><div class="v">{{ m.remaining_to_recover }} Bs</div><div class="l">Falta por recuperar</div></div>
+  <div class="metric"><div class="v">{{ m.recovery_pct }}%</div><div class="l">Recuperación</div></div>
+</div>
+
+<h2>Productos del lote</h2>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th class="num">Compradas</th><th class="num">Vendidas</th><th class="num">Restantes</th>
+        <th class="num">Costo/u (Bs)</th><th class="num">Precio prom. (Bs)</th><th class="num">Ganancia/u (Bs)</th>
+        <th>Stock por ciudad</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in m.items %}
+      <tr>
+        <td>{{ i.product_name }}</td>
+        <td class="num">{{ i.quantity_bought }}</td>
+        <td class="num">{{ i.quantity_sold }}</td>
+        <td class="num"><b>{{ i.quantity_remaining }}</b></td>
+        <td class="num">{{ i.unit_cost }}</td>
+        <td class="num">{{ i.avg_sale_price if i.avg_sale_price is not none else "—" }}</td>
+        <td class="num">{{ i.profit_per_unit if i.profit_per_unit is not none else "—" }}</td>
+        <td class="muted">
+          {% for city, qty in i.remaining_by_city.items() %}{{ city }}: {{ qty }}{% if not loop.last %} · {% endif %}{% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2>Ventas del lote</h2>
+<div class="card">
+  {% if m.sales %}
+  <table>
+    <thead>
+      <tr><th>Fecha</th><th>Vendedor</th><th>Producto</th><th>Ciudad</th><th class="num">Cant.</th><th class="num">Precio/u</th><th class="num">Total (Bs)</th></tr>
+    </thead>
+    <tbody>
+      {% for s in m.sales %}
+      <tr>
+        <td class="muted">{{ s.date }}</td>
+        <td>{{ s.seller }}</td>
+        <td>{{ s.product_name }}</td>
+        <td>{{ s.city or "—" }}</td>
+        <td class="num">{{ s.quantity }}</td>
+        <td class="num">{{ s.unit_price }}</td>
+        <td class="num">{{ s.total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">Sin ventas todavía.</p>
+  {% endif %}
+</div>
+{% endblock %}

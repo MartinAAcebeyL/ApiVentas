@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Lotes — ApiVentas{% endblock %}
+{% block content %}
+<h1>Lotes de importación</h1>
+<div class="card">
+  {% if summaries %}
+  <table>
+    <thead>
+      <tr>
+        <th>Lote</th><th>Fecha</th>
+        <th class="num">Invertido (Bs)</th><th class="num">Recuperado (Bs)</th><th class="num">Falta (Bs)</th>
+        <th>Recuperación</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in summaries %}
+      <tr>
+        <td><a href="/dashboard/imports/{{ s.id }}">{{ s.name }}</a></td>
+        <td class="muted">{{ s.created_at }}</td>
+        <td class="num">{{ s.investment }}</td>
+        <td class="num">{{ s.recovered }}</td>
+        <td class="num">{{ s.remaining_to_recover }}</td>
+        <td>
+          <div class="bar {{ 'done' if s.recovery_pct >= 100 }}"><div style="width: {{ [s.recovery_pct, 100] | min }}%"></div></div>
+          <span class="muted">{{ s.recovery_pct }}%</span>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">Aún no hay lotes. <a href="/dashboard/imports/new/form">Crea el primero</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}
