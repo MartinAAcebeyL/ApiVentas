@@ -30,7 +30,6 @@ class Product(Base):
 
     category: Mapped["Category"] = relationship("Category", back_populates="products")
     history_prices: Mapped[list["HistoryPrice"]] = relationship("HistoryPrice", back_populates="product")
-    stocks: Mapped[list["Stock"]] = relationship("Stock", back_populates="product")
 
 
 class HistoryPrice(Base):
@@ -42,16 +41,3 @@ class HistoryPrice(Base):
     created_at: Mapped[date] = mapped_column(Date, nullable=False)
 
     product: Mapped["Product"] = relationship("Product", back_populates="history_prices")
-
-
-class Stock(Base):
-    __tablename__ = "stocks"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), nullable=False)
-    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
-    current_quantity: Mapped[int] = mapped_column(Integer, nullable=False)
-    created_at: Mapped[date] = mapped_column(Date, nullable=False)
-    updated_at: Mapped[date] = mapped_column(Date, nullable=False)
-
-    product: Mapped["Product"] = relationship("Product", back_populates="stocks")

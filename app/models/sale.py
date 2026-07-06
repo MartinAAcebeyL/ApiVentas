@@ -38,9 +38,13 @@ class Sale(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     seller_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), nullable=False)
+    # Nullable: ventas históricas previas al modelo de lotes no tienen ítem ni ciudad
+    import_item_id: Mapped[int | None] = mapped_column(ForeignKey("import_items.id"), nullable=True)
+    city: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     seller: Mapped["User"] = relationship("User", back_populates="sales")  # noqa: F821
     product: Mapped["Product"] = relationship("Product")  # noqa: F821
+    import_item: Mapped["ImportItem | None"] = relationship("ImportItem")  # noqa: F821
     detail: Mapped["SaleDetail"] = relationship("SaleDetail", back_populates="sale", uselist=False)
     shipment: Mapped["Shipment | None"] = relationship("Shipment", back_populates="sale", uselist=False)
 
