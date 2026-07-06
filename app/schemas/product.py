@@ -36,13 +36,3 @@ class ProductRead(ProductBase):
     id: int
     category: CategoryRead
     model_config = {"from_attributes": True}
-
-
-class StockRead(BaseModel):
-    id: int
-    product_id: int
-    quantity: int
-    current_quantity: int
-    created_at: date
-    updated_at: date
-    model_config = {"from_attributes": True}
