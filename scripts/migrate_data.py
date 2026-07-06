@@ -90,32 +90,6 @@ def migrate_history_prices(src_cur, tgt_cur):
     return len(rows)
 
 
-def migrate_stocks(src_cur, tgt_cur):
-    """
-    Django usaba M2M (stocks_product). Aquí se aplana a FK simple: el primer
-    producto del M2M se toma como product_id. Si hay stocks sin productos se omiten.
-    """
-    src_cur.execute("""
-        SELECT s.id, s.quantity, s.current_quantity, s.created_at, s.updated_at,
-               sp.product_id
-        FROM stocks s
-        LEFT JOIN stocks_product sp ON sp.stock_id = s.id
-    """)
-    rows = src_cur.fetchall()
-    migrated = 0
-    for r in rows:
-        if not r["product_id"]:
-            print(f"  WARN: stock id={r['id']} sin producto, omitido")
-            continue
-        tgt_cur.execute("""
-            INSERT INTO stocks (id, product_id, quantity, current_quantity, created_at, updated_at)
-            VALUES (%(id)s, %(product_id)s, %(quantity)s, %(current_quantity)s,
-                    %(created_at)s, %(updated_at)s)
-            ON CONFLICT (id) DO NOTHING
-        """, dict(r))
-        migrated += 1
-    return migrated
-
 
 def migrate_sales(src_cur, tgt_cur):
     """
@@ -181,7 +155,7 @@ def reset_sequences(tgt_cur):
     """Sincroniza las secuencias de autoincremento tras inserción con IDs explícitos."""
     for table, col in [
         ("categories", "id"), ("products", "id"), ("history_prices", "id"),
-        ("stocks", "id"), ("sales", "id"), ("sales_details", "id"), ("shipments", "id"),
+        ("sales", "id"), ("sales_details", "id"), ("shipments", "id"),
     ]:
         tgt_cur.execute(f"""
             SELECT setval(
@@ -208,7 +182,6 @@ def main():
         ("categories", migrate_categories),
         ("products", migrate_products),
         ("history_prices", migrate_history_prices),
-        ("stocks", migrate_stocks),
         ("sales", migrate_sales),
         ("sales_details", migrate_sale_details),
         ("shipments", migrate_shipments),
